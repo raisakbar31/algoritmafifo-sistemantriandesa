@@ -38,16 +38,7 @@ class Queue_model extends CI_Model {
         $result = $this->db->get('queue')->row();
         return $result->queue_number;
     }
-/*
-    public function get_my_queue_number($user_id) {
-        $this->db->select('queue_number');
-        $this->db->from('queue');
-        $this->db->where('user_id', $user_id);
-        $this->db->where('status', 'waiting');
-        $result = $this->db->get()->row();
-        return $result ? $result->queue_number : null;
-    }
-*/
+
 public function get_my_queue_number($user_id) {
     $this->db->select('queue.*, services.name as service_name');
     $this->db->from('queue');
