@@ -138,9 +138,7 @@
         <h2>Admin Dashboard</h2>
         <ul class="nav flex-column">
        
-            <li class="nav-item">
-                <a class="nav-link" href="<?= site_url('auth/logout') ?>">Logout</a>
-            </li>
+           
             <?php if ($this->session->userdata('role') == 'admin'): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="<?= site_url('dashboard/admin') ?>">Dashboard Admin</a>
@@ -150,6 +148,9 @@
                         <a class="nav-link" href="<?= site_url('dashboard/user') ?>">Dashboard User</a>
                     </li>
                 <?php endif; ?>
+                <li class="nav-item">
+                <a class="nav-link" href="<?= site_url('auth/logout') ?>">Logout</a>
+            </li>
         </ul>
     </div>
 
