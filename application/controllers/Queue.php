@@ -13,14 +13,13 @@ class Queue extends CI_Controller {
     }
 
     public function index() {
+        $user_id = $this->session->userdata('user_id');
         $data['queues'] = $this->Queue_model->get_all_queues();
         $data['queue_history'] = $this->Queue_model->get_queue_history();
         $data['last_queue_number'] = $this->Queue_model->get_last_queue_number();
-        $data['my_queue_number'] = $this->Queue_model->get_my_queue_number($this->session->userdata('user_id'));
-
+        $data['my_queue'] = $this->Queue_model->get_my_queue_number($user_id); // Menggunakan $my_queue
         $data['services'] = $this->Queue_model->get_services();
-        $data['queues'] = $this->Queue_model->get_all_queues(); // Pastikan ada metode untuk mendapatkan semua antrian
-
+    
         $this->load->view('queue/index', $data);
     }
 
