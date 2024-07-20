@@ -5,70 +5,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Antrian</title>
     <link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css') ?>">
-</head>
-<style>
-    /* custom.css */
-body {
-    background-color: #f8f9fa;
-}
-
-.container {
-    margin-top: 20px;
-}
-
-h1, h2 {
-    color: #343a40;
-}
-
-.card {
-    border-radius: 10px;
-    border: 1px solid #dee2e6;
-    margin-bottom: 20px;
-}
-
-.card-body {
-    padding: 20px;
-}
-
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: #fff;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            position:fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .main-content {
+            margin-left: 330px; /* Same as the width of the sidebar */
+            padding: 20px;
+            flex: 1;
+        }
+        h1, h2 {
+            color: #343a40;
+        }
+        .card {
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 20px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table thead {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .table th, .table td {
+            text-align: center;
+        }
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #e9ecef;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-primary, .btn-success, .btn-danger, .btn-info {
+            border-radius: 5px;
+        }
+        .alert {
+            border-radius: 5px;
+        }
+        /* Gaya untuk Tabel */
 .table {
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    overflow: hidden;
 }
 
-.table thead {
+.table thead th {
     background-color: #007bff;
     color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
 }
 
-.table th, .table td {
-    text-align: center;
+.table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.table tbody td {
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table tbody td:first-child {
+    border-radius: 10px 0 0 10px;
+}
+
+.table tbody td:last-child {
+    border-radius: 0 10px 10px 0;
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
-    background-color: #e9ecef;
+    background-color: #f8f9fa;
 }
 
-.btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
+.table-bordered {
+    border: 1px solid #dee2e6;
 }
 
-.btn-primary, .btn-success, .btn-danger, .btn-info {
-    border-radius: 5px;
+.table-bordered thead th {
+    border-bottom-width: 2px;
 }
 
-.alert {
-    border-radius: 5px;
-}
-</style>
+
+  
+    </style>
+</head>
 <body>
-    <div class="container">
+ 
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <ul class="nav flex-column">
+       
+            <li class="nav-item">
+                <a class="nav-link" href="<?= site_url('auth/logout') ?>">Logout</a>
+            </li>
+            <?php if ($this->session->userdata('role') == 'admin'): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= site_url('dashboard/admin') ?>">Dashboard Admin</a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= site_url('dashboard/user') ?>">Dashboard User</a>
+                    </li>
+                <?php endif; ?>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
         <h1>Daftar Antrian</h1>
-        <?php if ($this->session->userdata('role') == 'admin'): ?>
-            <a href="<?= site_url('dashboard/admin') ?>" class="btn btn-secondary">Kembali ke Dashboard</a>
-        <?php else: ?>
-            <a href="<?= site_url('dashboard/user') ?>" class="btn btn-secondary">Kembali ke Dashboard</a>
-        <?php endif; ?>
 
         <?php if ($this->session->flashdata('success')): ?>
             <div class="alert alert-success"><?= $this->session->flashdata('success') ?></div>
@@ -87,17 +174,16 @@ h1, h2 {
                 </div>
             </div>
             <div class="col-md-6">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Nomor Antrian Saya</h5>
-            <p class="card-text"><?= $my_queue_number ? $my_queue_number : 'Anda belum mengambil nomor antrian' ?></p>
-            <?php if ($my_queue_number): ?>
-                <p class="card-text">Layanan yang Dipilih: <?= isset($my_queue->service_name) ? $my_queue->service_name : 'Tidak ada layanan' ?></p>
-            <?php endif; ?>
-        </div>
-    </div>
-</div>
-
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Nomor Antrian Saya</h5>
+                        <p class="card-text"><?= isset($my_queue->queue_number) ? $my_queue->queue_number : 'Anda belum mengambil nomor antrian' ?></p>
+                        <?php if (isset($my_queue->queue_number)): ?>
+                            <p class="card-text">Layanan yang Dipilih: <?= isset($my_queue->service_name) ? $my_queue->service_name : 'Tidak ada layanan' ?></p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <h2>Antrian Sekarang</h2>
@@ -177,6 +263,7 @@ h1, h2 {
             </tbody>
         </table>
     </div>
+
     <script src="<?= base_url('assets/js/bootstrap.bundle.min.js') ?>"></script>
 </body>
 </html>
